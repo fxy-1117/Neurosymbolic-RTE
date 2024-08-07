@@ -1,1 +1,1 @@
-RTE
+To download the e-SNLI and MultiNLI datasets, please visit the corresponding dataset websites https://github.com/OanaMariaCamburu/e-SNLI and https://cims.nyu.edu/~sbowman/multinli/. The SICK dataset is included within the code.
