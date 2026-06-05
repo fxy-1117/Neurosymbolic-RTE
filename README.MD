@@ -16,12 +16,17 @@ Use the `eesnli` conda environment. It should include the dependencies in
 
 ## Data
 
-Keep data under `data/`:
+Data files are not included in the GitHub code because they are large. To run
+from scratch, create `data/` locally and put the required files there:
 
 ```text
 data/esnli_train_1.csv
 data/multinli_1.0/multinli_1.0_train.jsonl
 ```
+
+Only `esnli_train_1.csv` is needed for the e-SNLI experiments in this code.
+Other e-SNLI files such as dev/test/train_2 are optional and are not used by
+the default tasks.
 
 SICK is loaded from the Hugging Face cache when available.
 
@@ -53,6 +58,9 @@ python -m rte_identification tasks --select esnli,param
 ```
 
 ## Cache
+
+Cache and result files are local outputs. They are not included in the GitHub
+code.
 
 - `.cache/logic/`: sentence-level AMR logic
 - `.cache/neural/`: neural embeddings
