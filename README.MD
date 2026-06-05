@@ -1,105 +1,66 @@
 # Neurosymbolic RTE Identification
 
-This project contains the Python version of the AAAI 2025 entailment /
-contradiction identification notebook.
-
-The code keeps the original notebook reasoning logic, but moves experiment
-execution into `.py` files with deterministic sampling, AMR logic caching, and
-neural embedding caching.
-
-## Code Layout
-
-- `rte_identification/datasets.py`: dataset loading and fixed-seed sampling.
-- `rte_identification/model_runtime.py`: AMR, spaCy, and neural scorer loaders.
-- `rte_identification/reasoner.py`: notebook-derived symbolic prover.
-- `rte_identification/experiments.py`: cache preparation, evaluation, and result JSON writing.
-- `rte_identification/cli.py`: command line entry point.
+Python code for the AAAI 2025 entailment / contradiction identification
+experiments. The notebook logic is kept, with deterministic sampling plus logic
+and neural caches.
 
 ## Environment
 
-The experiments were run in the `eesnli` conda environment used by the original
-notebook. Besides the dependencies in `requirements.txt`, the environment must
-provide:
+Use the `eesnli` conda environment. It should include the dependencies in
+`requirements.txt`, plus:
 
 - `transition_amr_parser`
 - `amr_logic_converter`
-- the spaCy model `en_core_web_sm`
-- the AMR checkpoint `AMR3-joint-ontowiki-seed43`
+- `en_core_web_sm`
+- `AMR3-joint-ontowiki-seed43`
 
-Run directly from the project directory:
+Check that the code starts:
 
 ```powershell
 python -m rte_identification --help
 ```
 
-Or install it locally:
-
-```powershell
-pip install -e .
-```
-
 ## Data
 
-Put local data files under `data/`, or leave them in the current directory:
+Keep data under `data/`:
 
 ```text
 data/esnli_train_1.csv
 data/multinli_1.0/multinli_1.0_train.jsonl
 ```
 
-SICK is loaded from the Hugging Face datasets cache when available; otherwise
-`datasets.load_dataset("sick")` is used.
+SICK is loaded from the Hugging Face cache when available.
 
-## Paper Tables
+## Task List
 
-Run the three main datasets with the paper-style setting:
+Comment one task name and I will run it.
+
+| Task | What it runs |
+| --- | --- |
+| `main` | e-SNLI, SICK, and MNLI main results |
+| `esnli` | e-SNLI main result |
+| `sick` | SICK main result |
+| `mnli` | MNLI main result |
+| `param` | e-SNLI parameter analysis |
+| `noforget` | e-SNLI without forgetting |
+| `noexpl` | e-SNLI without explanation |
+
+Commands behind the tasks:
 
 ```powershell
 python -m rte_identification paper --seed 66 --per-class 500 --threshold 0.55
-```
-
-Run one dataset:
-
-```powershell
 python -m rte_identification run --dataset esnli --seed 66 --per-class 500
 python -m rte_identification run --dataset sick --seed 66 --per-class 500
 python -m rte_identification run --dataset mnli --seed 66 --per-class 500
-```
-
-Outputs are written to `results/`.
-
-## Parameter Analysis
-
-The paper threshold sweep uses e-SNLI, 500 examples per class, max sentence
-length 20, and thresholds `0.5 0.55 0.6 0.65 0.7 0.75 0.8 1.0`:
-
-```powershell
 python -m rte_identification parameter-analysis --dataset esnli --seed 66 --per-class 500 --max-len 20
-```
-
-The AMR logic cache is sentence-level and shared across datasets and thresholds,
-so each unique sentence only needs to be parsed once.
-
-## e-SNLI Ablations
-
-Run the paper's e-SNLI ablations:
-
-```powershell
-$env:PYTHONPATH="src"
 python -m rte_identification run --dataset esnli --seed 66 --per-class 500 --no-forgetting
 python -m rte_identification run --dataset esnli --seed 66 --per-class 500 --no-explanation
 ```
 
 ## Cache
 
-Two caches are used:
+- `.cache/logic/`: sentence-level AMR logic
+- `.cache/neural/`: neural embeddings
+- `.cache/nltk_data/`: local NLTK data
 
-- `.cache/logic/sentence_logic.pkl`: AMR-to-logic formulas keyed by sentence text.
-- `.cache/neural/`: SentenceTransformer embeddings used by predicate matching.
-- `.cache/nltk_data/`: local NLTK resources such as WordNet.
-
-To ignore the AMR logic cache and regenerate formulas for the current run:
-
-```powershell
-python -m rte_identification run --dataset esnli --no-logic-cache
-```
+Outputs are written to `results/`.
