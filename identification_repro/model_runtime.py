@@ -22,12 +22,12 @@ warnings.filterwarnings(
 
 
 def project_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+    return Path(__file__).resolve().parents[1]
 
 
 def ensure_nltk_data(nltk_data_dir: Path | None = None) -> None:
     """Prefer the local NLTK data directory when it exists."""
-    nltk_data_dir = nltk_data_dir or project_root() / "nltk_data"
+    nltk_data_dir = nltk_data_dir or project_root() / ".cache" / "nltk_data"
     if not nltk_data_dir.exists():
         return
 

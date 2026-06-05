@@ -36,6 +36,9 @@ def _find_data_file(data_dir: Path, filename: str) -> Path:
     for candidate in candidates:
         if candidate.exists():
             return candidate
+    for candidate in sorted(data_dir.rglob(filename)):
+        if candidate.exists():
+            return candidate
     raise FileNotFoundError(f"Could not find {filename} in {data_dir} or the current directory")
 
 

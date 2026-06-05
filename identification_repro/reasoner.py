@@ -20,17 +20,23 @@ from sympy import Symbol
 from sympy.logic.boolalg import to_cnf
 
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[2]
-_LOCAL_NLTK_DATA = _PROJECT_ROOT / "nltk_data"
+_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+_LOCAL_NLTK_DATA = _PROJECT_ROOT / ".cache" / "nltk_data"
 _LOCAL_NLTK_DATA.mkdir(parents=True, exist_ok=True)
 os.environ.setdefault("NLTK_DATA", str(_LOCAL_NLTK_DATA))
 if str(_LOCAL_NLTK_DATA) not in nltk.data.path:
     nltk.data.path.insert(0, str(_LOCAL_NLTK_DATA))
 
 from nltk.tokenize import word_tokenize
-from word_forms.word_forms import get_word_forms
 
 nlp = None
+
+
+def word_forms_for(word):
+    """Load word_forms lazily after the local NLTK path is configured."""
+    from word_forms.word_forms import get_word_forms
+
+    return get_word_forms(word, 0.7)
 
 
 def get_substring(s, w1, w2):
@@ -57,9 +63,11 @@ def get_substring(s, w1, w2):
     if w2 == "person":
         w222 = [str(tok) for tok in nlp(s) if tok.dep_ == "nsubj"]
 
-    sub1 = [j for i in get_word_forms(w1, 0.7) for j in get_word_forms(w1, 0.7)[i]]
+    forms1 = word_forms_for(w1)
+    forms2 = word_forms_for(w2)
+    sub1 = [j for i in forms1 for j in forms1[i]]
     sub1 += [w1] + w11 + w111
-    sub2 = [j for i in get_word_forms(w2, 0.7) for j in get_word_forms(w2, 0.7)[i]]
+    sub2 = [j for i in forms2 for j in forms2[i]]
     sub2 += [w2] + w22 + w222
 
     search1 = 0

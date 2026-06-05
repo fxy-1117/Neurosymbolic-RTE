@@ -28,4 +28,4 @@ dependencies = [
 identification-repro = "identification_repro.cli:main"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
