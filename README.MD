@@ -1,7 +1,7 @@
-# Identification Notebook Python Version
+# Neurosymbolic RTE Identification
 
-Python version of the AAAI 2025 entailment / contradiction identification
-notebook.
+This project contains the Python version of the AAAI 2025 entailment /
+contradiction identification notebook.
 
 The code keeps the original notebook reasoning logic, but moves experiment
 execution into `.py` files with deterministic sampling, AMR logic caching, and
@@ -18,7 +18,7 @@ neural embedding caching.
 ## Environment
 
 The experiments were run in the `eesnli` conda environment used by the original
-notebook. Besides the packages in `requirements.txt`, the environment must
+notebook. Besides the dependencies in `requirements.txt`, the environment must
 provide:
 
 - `transition_amr_parser`
@@ -26,17 +26,17 @@ provide:
 - the spaCy model `en_core_web_sm`
 - the AMR checkpoint `AMR3-joint-ontowiki-seed43`
 
-Optional editable install:
-
-```bash
-pip install -e .
-```
-
-On this machine you can also run directly:
+Run directly from the project directory:
 
 ```powershell
 $env:PYTHONPATH="src"
 python -m identification_repro --help
+```
+
+Or install it locally:
+
+```powershell
+pip install -e .
 ```
 
 ## Data
