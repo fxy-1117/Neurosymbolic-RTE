@@ -94,7 +94,7 @@ def cmd_parameter_analysis(args) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        prog="identification-repro",
+        prog="rte-identification",
         description="Run the AAAI 2025 identification notebook experiments.",
     )
     subparsers = parser.add_subparsers(required=True)

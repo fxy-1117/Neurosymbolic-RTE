@@ -9,11 +9,11 @@ neural embedding caching.
 
 ## Code Layout
 
-- `identification_repro/datasets.py`: dataset loading and fixed-seed sampling.
-- `identification_repro/model_runtime.py`: AMR, spaCy, and neural scorer loaders.
-- `identification_repro/reasoner.py`: notebook-derived symbolic prover.
-- `identification_repro/experiments.py`: cache preparation, evaluation, and result JSON writing.
-- `identification_repro/cli.py`: command line entry point.
+- `rte_identification/datasets.py`: dataset loading and fixed-seed sampling.
+- `rte_identification/model_runtime.py`: AMR, spaCy, and neural scorer loaders.
+- `rte_identification/reasoner.py`: notebook-derived symbolic prover.
+- `rte_identification/experiments.py`: cache preparation, evaluation, and result JSON writing.
+- `rte_identification/cli.py`: command line entry point.
 
 ## Environment
 
@@ -29,7 +29,7 @@ provide:
 Run directly from the project directory:
 
 ```powershell
-python -m identification_repro --help
+python -m rte_identification --help
 ```
 
 Or install it locally:
@@ -50,20 +50,20 @@ data/multinli_1.0/multinli_1.0_train.jsonl
 SICK is loaded from the Hugging Face datasets cache when available; otherwise
 `datasets.load_dataset("sick")` is used.
 
-## Reproduce Paper Tables
+## Paper Tables
 
 Run the three main datasets with the paper-style setting:
 
 ```powershell
-python -m identification_repro paper --seed 66 --per-class 500 --threshold 0.55
+python -m rte_identification paper --seed 66 --per-class 500 --threshold 0.55
 ```
 
 Run one dataset:
 
 ```powershell
-python -m identification_repro run --dataset esnli --seed 66 --per-class 500
-python -m identification_repro run --dataset sick --seed 66 --per-class 500
-python -m identification_repro run --dataset mnli --seed 66 --per-class 500
+python -m rte_identification run --dataset esnli --seed 66 --per-class 500
+python -m rte_identification run --dataset sick --seed 66 --per-class 500
+python -m rte_identification run --dataset mnli --seed 66 --per-class 500
 ```
 
 Outputs are written to `results/`.
@@ -74,7 +74,7 @@ The paper threshold sweep uses e-SNLI, 500 examples per class, max sentence
 length 20, and thresholds `0.5 0.55 0.6 0.65 0.7 0.75 0.8 1.0`:
 
 ```powershell
-python -m identification_repro parameter-analysis --dataset esnli --seed 66 --per-class 500 --max-len 20
+python -m rte_identification parameter-analysis --dataset esnli --seed 66 --per-class 500 --max-len 20
 ```
 
 The AMR logic cache is sentence-level and shared across datasets and thresholds,
@@ -86,8 +86,8 @@ Run the paper's e-SNLI ablations:
 
 ```powershell
 $env:PYTHONPATH="src"
-python -m identification_repro run --dataset esnli --seed 66 --per-class 500 --no-forgetting
-python -m identification_repro run --dataset esnli --seed 66 --per-class 500 --no-explanation
+python -m rte_identification run --dataset esnli --seed 66 --per-class 500 --no-forgetting
+python -m rte_identification run --dataset esnli --seed 66 --per-class 500 --no-explanation
 ```
 
 ## Cache
@@ -101,5 +101,5 @@ Two caches are used:
 To ignore the AMR logic cache and regenerate formulas for the current run:
 
 ```powershell
-python -m identification_repro run --dataset esnli --no-logic-cache
+python -m rte_identification run --dataset esnli --no-logic-cache
 ```

@@ -96,7 +96,7 @@ def load_esnli(
 
 
 def _load_sick_splits():
-    """Load SICK in the same order as the notebook reproduction runner.
+    """Load SICK in the same order as the notebook runner.
 
     The local HuggingFace Arrow cache is discovered with a sorted glob in the
     notebook-derived runner. On this machine that order is test, train,

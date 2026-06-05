@@ -7,7 +7,6 @@ multinli_1.0/
 # Generated experiment artifacts.
 /.cache/
 /results/
-/repro_outputs/
 /nltk_data/
 /legacy/
 
