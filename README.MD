@@ -1,8 +1,108 @@
-To download the e-SNLI and MultiNLI datasets, please visit the corresponding dataset websites https://github.com/OanaMariaCamburu/e-SNLI and https://cims.nyu.edu/~sbowman/multinli/. The SICK dataset is included within the code.
+# Identification Notebook Python Version
 
-The installation of the IBM transition parser can be found at https://github.com/IBM/transition-amr-parser.
+Python version of the AAAI 2025 entailment / contradiction identification
+notebook.
 
-The installation of the AMR to FOL converter can be found at https://github.com/chanind/amr-logic-converter.
+The code keeps the original notebook reasoning logic, but moves experiment
+execution into `.py` files with deterministic sampling, AMR logic caching, and
+neural embedding caching.
 
-The pipeline takes a pair consisting of a premise (and explanation) sentence and a claim sentence as input. It converts these sentences into propositional logic form via an AMR parser and an AMR-to-FOL converter. Then, the prove() function in the code classifies the propositional logic pair as entailment, contradiction, or neutral using relaxed methods.
+## Code Layout
 
+- `src/identification_repro/datasets.py`: dataset loading and fixed-seed sampling.
+- `src/identification_repro/model_runtime.py`: AMR, spaCy, and neural scorer loaders.
+- `src/identification_repro/reasoner.py`: notebook-derived symbolic prover.
+- `src/identification_repro/experiments.py`: cache preparation, evaluation, and result JSON writing.
+- `src/identification_repro/cli.py`: command line entry point.
+
+## Environment
+
+The experiments were run in the `eesnli` conda environment used by the original
+notebook. Besides the packages in `requirements.txt`, the environment must
+provide:
+
+- `transition_amr_parser`
+- `amr_logic_converter`
+- the spaCy model `en_core_web_sm`
+- the AMR checkpoint `AMR3-joint-ontowiki-seed43`
+
+Optional editable install:
+
+```bash
+pip install -e .
+```
+
+On this machine you can also run directly:
+
+```powershell
+$env:PYTHONPATH="src"
+python -m identification_repro --help
+```
+
+## Data
+
+Put local data files under `data/`, or leave them in the current directory:
+
+```text
+data/esnli_train_1.csv
+data/multinli_1.0_train.jsonl
+```
+
+SICK is loaded from the Hugging Face datasets cache when available; otherwise
+`datasets.load_dataset("sick")` is used.
+
+## Reproduce Paper Tables
+
+Run the three main datasets with the paper-style setting:
+
+```powershell
+$env:PYTHONPATH="src"
+python -m identification_repro paper --seed 66 --per-class 500 --threshold 0.55
+```
+
+Run one dataset:
+
+```powershell
+$env:PYTHONPATH="src"
+python -m identification_repro run --dataset esnli --seed 66 --per-class 500
+python -m identification_repro run --dataset sick --seed 66 --per-class 500
+python -m identification_repro run --dataset mnli --seed 66 --per-class 500
+```
+
+Outputs are written to `results/`.
+
+## Parameter Analysis
+
+The paper threshold sweep uses e-SNLI, 500 examples per class, max sentence
+length 20, and thresholds `0.5 0.55 0.6 0.65 0.7 0.75 0.8 1.0`:
+
+```powershell
+$env:PYTHONPATH="src"
+python -m identification_repro parameter-analysis --dataset esnli --seed 66 --per-class 500 --max-len 20
+```
+
+The AMR logic cache is sentence-level and shared across datasets and thresholds,
+so each unique sentence only needs to be parsed once.
+
+## e-SNLI Ablations
+
+Run the paper's e-SNLI ablations:
+
+```powershell
+$env:PYTHONPATH="src"
+python -m identification_repro run --dataset esnli --seed 66 --per-class 500 --no-forgetting
+python -m identification_repro run --dataset esnli --seed 66 --per-class 500 --no-explanation
+```
+
+## Cache
+
+Two caches are used:
+
+- `.cache/logic/sentence_logic.pkl`: AMR-to-logic formulas keyed by sentence text.
+- `.cache/neural/`: SentenceTransformer embeddings used by predicate matching.
+
+To ignore the AMR logic cache and regenerate formulas for the current run:
+
+```powershell
+python -m identification_repro run --dataset esnli --no-logic-cache
+```

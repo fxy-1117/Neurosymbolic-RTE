@@ -1,0 +1,25 @@
+# Local datasets are large and should not be committed.
+/data/
+*.csv
+*.jsonl
+multinli_1.0/
+
+# Generated experiment artifacts.
+/.cache/
+/results/
+/repro_outputs/
+/nltk_data/
+/legacy/
+
+# Notebook and OS clutter from the original workspace.
+.ipynb_checkpoints/
+__pycache__/
+*.py[cod]
+.github_token
+.DS_Store
+._*
+
+# Large model/cache outputs.
+*.pkl
+*.pt
+*.arrow

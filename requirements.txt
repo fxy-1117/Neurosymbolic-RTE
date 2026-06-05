@@ -1,0 +1,18 @@
+datasets
+inflect
+nltk
+numpy
+pandas
+python-sat
+scikit-learn
+sentence-transformers
+spacy
+sympy
+torch
+tqdm
+word-forms
+
+# Extra dependencies used by the original notebook:
+# - transition-amr-parser
+# - amr-logic-converter
+# Install them in the same environment before running the experiments.

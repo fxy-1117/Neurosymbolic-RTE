@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "identification-repro"
+version = "0.1.0"
+description = "Python version of the AAAI 2025 entailment/contradiction identification notebook."
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "datasets",
+  "inflect",
+  "nltk",
+  "numpy",
+  "pandas",
+  "python-sat",
+  "scikit-learn",
+  "sentence-transformers",
+  "spacy",
+  "sympy",
+  "torch",
+  "tqdm",
+  "word-forms",
+]
+
+[project.scripts]
+identification-repro = "identification_repro.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
