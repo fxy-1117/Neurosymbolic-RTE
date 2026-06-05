@@ -1,8 +1,8 @@
 # Neurosymbolic RTE Identification
 
-Python code for the AAAI 2025 entailment / contradiction identification
-experiments. The notebook logic is kept, with deterministic sampling plus logic
-and neural caches.
+Python code for entailment / contradiction identification experiments. The
+notebook logic is kept, with deterministic sampling plus logic and neural
+caches.
 
 ## Environment
 
@@ -13,12 +13,6 @@ Use the `eesnli` conda environment. It should include the dependencies in
 - `amr_logic_converter`
 - `en_core_web_sm`
 - `AMR3-joint-ontowiki-seed43`
-
-Check that the code starts:
-
-```powershell
-python -m rte_identification --help
-```
 
 ## Data
 
@@ -31,9 +25,15 @@ data/multinli_1.0/multinli_1.0_train.jsonl
 
 SICK is loaded from the Hugging Face cache when available.
 
-## Task List
+## Run
 
-Comment one task name and I will run it.
+Start the task list:
+
+```powershell
+python -m rte_identification
+```
+
+Then choose one or more tasks by number or name.
 
 | Task | What it runs |
 | --- | --- |
@@ -45,16 +45,11 @@ Comment one task name and I will run it.
 | `noforget` | e-SNLI without forgetting |
 | `noexpl` | e-SNLI without explanation |
 
-Commands behind the tasks:
+You can also skip the prompt:
 
 ```powershell
-python -m rte_identification paper --seed 66 --per-class 500 --threshold 0.55
-python -m rte_identification run --dataset esnli --seed 66 --per-class 500
-python -m rte_identification run --dataset sick --seed 66 --per-class 500
-python -m rte_identification run --dataset mnli --seed 66 --per-class 500
-python -m rte_identification parameter-analysis --dataset esnli --seed 66 --per-class 500 --max-len 20
-python -m rte_identification run --dataset esnli --seed 66 --per-class 500 --no-forgetting
-python -m rte_identification run --dataset esnli --seed 66 --per-class 500 --no-explanation
+python -m rte_identification tasks --select main
+python -m rte_identification tasks --select esnli,param
 ```
 
 ## Cache

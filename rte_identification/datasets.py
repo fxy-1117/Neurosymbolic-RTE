@@ -1,4 +1,4 @@
-"""Dataset loading and deterministic sampling for the paper experiments."""
+"""Dataset loading and deterministic sampling for the identification experiments."""
 
 from __future__ import annotations
 

@@ -12,6 +12,7 @@ multinli_1.0/
 
 # Notebook and OS clutter from the original workspace.
 .ipynb_checkpoints/
+.vscode/
 __pycache__/
 *.py[cod]
 .github_token

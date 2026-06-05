@@ -1,4 +1,4 @@
-"""Experiment runner for the identification notebook experiments."""
+"""Experiment runner for the identification experiments."""
 
 from __future__ import annotations
 
@@ -283,7 +283,7 @@ def run_parameter_analysis(
     output_dir: Path,
     reuse_logic_cache: bool = True,
 ) -> list[dict]:
-    """Run the paper's threshold sweep while reusing logic and neural caches."""
+    """Run the threshold sweep while reusing logic and neural caches."""
     ensure_nltk_data()
     examples = load_dataset_examples(
         base_config.dataset,
