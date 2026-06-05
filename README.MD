@@ -27,7 +27,7 @@ SICK is loaded from the Hugging Face cache when available.
 
 ## Run
 
-Start the task list:
+In VSCode, open `run.py` and click Run. Or start the task list from a terminal:
 
 ```powershell
 python -m rte_identification
