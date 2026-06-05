@@ -25,17 +25,37 @@ def project_root() -> Path:
     return Path(__file__).resolve().parents[1]
 
 
+NLTK_RESOURCES = [
+    (("tokenizers/punkt",), "punkt"),
+    (("corpora/wordnet", "corpora/wordnet.zip"), "wordnet"),
+    (("corpora/omw-1.4", "corpora/omw-1.4.zip"), "omw-1.4"),
+]
+
+
 def ensure_nltk_data(nltk_data_dir: Path | None = None) -> None:
-    """Prefer the local NLTK data directory when it exists."""
+    """Use the local NLTK data directory and download missing resources."""
     nltk_data_dir = nltk_data_dir or project_root() / ".cache" / "nltk_data"
-    if not nltk_data_dir.exists():
-        return
+    nltk_data_dir.mkdir(parents=True, exist_ok=True)
 
     os.environ.setdefault("NLTK_DATA", str(nltk_data_dir))
     import nltk
 
     if str(nltk_data_dir) not in nltk.data.path:
         nltk.data.path.insert(0, str(nltk_data_dir))
+
+    for resources, package in NLTK_RESOURCES:
+        found = False
+        for resource in resources:
+            try:
+                nltk.data.find(resource)
+                found = True
+                break
+            except LookupError:
+                continue
+        if not found:
+            print(f"[nltk] downloading {package} to {nltk_data_dir}", flush=True)
+            if not nltk.download(package, download_dir=str(nltk_data_dir), quiet=True):
+                raise RuntimeError(f"Could not download NLTK resource: {package}")
 
 
 def prefer_local_fairseq_hub() -> None:

@@ -11,6 +11,8 @@ import numpy as np
 import pandas as pd
 from nltk.tokenize import word_tokenize
 
+from .model_runtime import ensure_nltk_data
+
 
 LABELS = ["ent", "con", "neu"]
 NOTEBOOK_SAMPLE_ORDER = ["ent", "neu", "con"]
@@ -45,6 +47,7 @@ def _find_data_file(data_dir: Path, filename: str) -> Path:
 def _within_max_len(sentences: Iterable[str], max_len: int) -> bool:
     if max_len <= 0:
         return True
+    ensure_nltk_data()
     return all(len(word_tokenize(sentence)) <= max_len for sentence in sentences)
 
 
