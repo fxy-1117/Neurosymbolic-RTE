@@ -14,7 +14,13 @@ from tqdm import tqdm
 
 from . import reasoner
 from .datasets import Example, LABELS, load_dataset_examples
-from .model_runtime import NeuralScorer, ensure_nltk_data, load_amr_runtime, load_spacy_model
+from .model_runtime import (
+    NeuralScorer,
+    ensure_nltk_data,
+    load_amr_runtime,
+    load_spacy_model,
+    suppress_external_output,
+)
 
 
 LOGIC_CACHE_VERSION = 1
@@ -129,14 +135,16 @@ def generate_sentence_logic_chunks(
             f"batch_size={batch_size}, roberta_batch_size={roberta_batch_size}",
             flush=True,
         )
-        annotations, _machines = parser.parse_sentences(
-            token_batch,
-            batch_size=batch_size,
-            roberta_batch_size=roberta_batch_size,
-        )
+        with suppress_external_output():
+            annotations, _machines = parser.parse_sentences(
+                token_batch,
+                batch_size=batch_size,
+                roberta_batch_size=roberta_batch_size,
+            )
 
         print(f"[logic] converting sentences {start + 1}-{end} to logic formulas", flush=True)
-        converted = [converter.convert(annotation) for annotation in annotations]
+        with suppress_external_output():
+            converted = [converter.convert(annotation) for annotation in annotations]
         yield dict(zip(chunk, converted))
 
 

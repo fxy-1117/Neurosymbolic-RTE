@@ -7,6 +7,9 @@ the command line entry points can cache results between runs.
 
 from __future__ import annotations
 
+import contextlib
+import io
+import logging
 import os
 import pickle
 import warnings
@@ -30,6 +33,31 @@ NLTK_RESOURCES = [
     (("corpora/wordnet", "corpora/wordnet.zip"), "wordnet"),
     (("corpora/omw-1.4", "corpora/omw-1.4.zip"), "omw-1.4"),
 ]
+
+
+@contextlib.contextmanager
+def suppress_external_output():
+    """Temporarily hide verbose output from model-loading libraries."""
+    logger_names = [
+        "fairseq",
+        "fairseq.file_utils",
+        "fairseq.tasks",
+        "fairseq.tasks.denoising",
+        "transition_amr_parser",
+    ]
+    loggers = [logging.getLogger(name) for name in logger_names]
+    old_levels = [logger.level for logger in loggers]
+    old_root_level = logging.getLogger().level
+    try:
+        logging.getLogger().setLevel(logging.ERROR)
+        for logger in loggers:
+            logger.setLevel(logging.ERROR)
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            yield
+    finally:
+        logging.getLogger().setLevel(old_root_level)
+        for logger, level in zip(loggers, old_levels):
+            logger.setLevel(level)
 
 
 def ensure_nltk_data(nltk_data_dir: Path | None = None) -> None:
@@ -87,11 +115,12 @@ def load_amr_runtime(model_name: str = "AMR3-joint-ontowiki-seed43"):
     from amr_logic_converter import AmrLogicConverter
     from transition_amr_parser.parse import AMRParser
 
-    parser = AMRParser.from_pretrained(model_name)
-    converter = AmrLogicConverter(
-        existentially_quantify_instances=False,
-        invert_relations=True,
-    )
+    with suppress_external_output():
+        parser = AMRParser.from_pretrained(model_name)
+        converter = AmrLogicConverter(
+            existentially_quantify_instances=False,
+            invert_relations=True,
+        )
     return parser, converter
 
 
