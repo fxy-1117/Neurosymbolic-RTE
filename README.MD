@@ -67,3 +67,9 @@ code.
 - `.cache/nltk_data/`: local NLTK data
 
 Outputs are written to `results/`.
+
+## License
+
+The original code in this repository is licensed under the [MIT License](LICENSE).
+Third-party dependencies, datasets (including source-derived content), and
+pretrained models retain their respective licenses and terms.
